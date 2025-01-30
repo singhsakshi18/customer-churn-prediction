@@ -1,32 +1,23 @@
-# customer-churn-prediction
-# Customer Churn Prediction
+import pandas as pd
+import streamlit as st
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
 
-This project uses machine learning to predict customer churn using a dataset provided by the user. The application is built using **Streamlit** and **scikit-learn** to train and evaluate a **RandomForestClassifier** on the provided data.
+def customer_churn_prediction():
+    st.title("Customer Churn Prediction")
+    uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        if 'Churn' not in df.columns:
+            st.error("CSV file must contain a 'Churn' column.")
+            return
+        
+        X = df.drop(columns=['Churn'])
+        y = df['Churn']
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        model = RandomForestClassifier()
+        model.fit(X_train, y_train)
+        st.write("Model Accuracy:", model.score(X_test, y_test))
 
-## Features
-
-- Upload a CSV file containing customer data.
-- The CSV file must contain a column named `Churn`, which represents whether a customer has churned or not.
-- The model will predict churn and provide an accuracy score based on the uploaded data.
-
-## Requirements
-
-- Python 3.x
-- `pandas`
-- `scikit-learn`
-- `streamlit`
-
-## Installation
-
-To run this project, you'll need to set up a Python environment and install the required libraries. You can follow these steps:
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/your-username/customer-churn-prediction.git
-pip install -r requirements.txt
-streamlit run app.py
-
-Make sure to replace `singhsakshi18` with your actual GitHub username and update the necessary file paths or names if needed.
-
-Let me know if you'd like me to tweak or add anything!
+if __name__ == "__main__":
+    customer_churn_prediction()
